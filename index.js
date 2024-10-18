@@ -2,7 +2,6 @@ const express = require('express');
 
 const app = express();
 
-// Importation dynamique de node-fetch pour compatibilité avec CommonJS
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 app.get('/resolve-url', async (req, res) => {
