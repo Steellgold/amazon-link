@@ -8,12 +8,22 @@ app.use(cors());
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 app.get('/resolve-url', async (req, res) => {
-  const { url } = req.query;
+  const shortUrl = req.query.url;
+  
+  if (!shortUrl) {
+    return res.status(400).json({ error: 'You must provide a URL to resolve' });
+  }
+
   try {
-    const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
-    res.json({ resolvedUrl: response.url });
-  } catch (err) {
-    res.status(500).json({ error: 'Unable to resolve the URL' });
+    const response = await fetch(shortUrl, {
+      method: 'GET',
+      redirect: 'follow'
+    });
+
+    const resolvedUrl = response.url;
+    res.json({ resolvedUrl });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while resolving the URL' });
   }
 });
 
